@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
+import { MatDividerModule } from '@angular/material/divider';
 
-const materialModules = [];
+const materialModules = [MatDividerModule];
 
 @NgModule({
     imports: materialModules,

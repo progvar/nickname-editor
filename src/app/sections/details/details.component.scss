@@ -1,0 +1,26 @@
+@import '~@angular/material/theming';
+
+.details-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: mat-color(mat-palette($mat-indigo, 800));
+    padding: 48px;
+
+    #address,
+    #description {
+        margin: 0 auto;
+        color: #ffffff;
+    }
+
+    #address {
+        font-size: 48px;
+        line-height: 48px;
+        margin-bottom: 48px;
+    }
+
+    #description {
+        font-size: 20px;
+        max-width: 80%;
+    }
+}
