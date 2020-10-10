@@ -4,12 +4,10 @@
     </mat-card-header>
     <mat-card-content>
         <mat-form-field>
-            <input matInput [formControl] [(ngModel)]="nicknameToAdd" [formControl]="formControl" />
+            <input matInput [formControl]="newNickname" />
         </mat-form-field>
 
-        <div>
-            <button mat-button color="primary" (click)="addNickname(nicknameToAdd)">Add</button>
-        </div>
+        <button mat-button color="primary" (click)="addNickname(newNickname.value)">Add</button>
     </mat-card-content>
 </mat-card>
 

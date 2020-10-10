@@ -10,11 +10,9 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
     styleUrls: ['./nicknames.component.scss'],
 })
 export class NicknamesSectionComponent implements OnInit, OnDestroy {
-    nicknameToAdd = '';
-    isNicknameValid;
+    newNickname = new FormControl('');
     nicknames: string[] = [];
     nicknames$ = new BehaviorSubject(this.nicknames);
-    formControl: FormControl = new FormControl();
 
     private destroy$ = new Subject();
 
@@ -26,12 +24,12 @@ export class NicknamesSectionComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.formControl.valueChanges.pipe(debounceTime(300), takeUntil(this.destroy$)).subscribe(console.log);
+        this.newNickname.valueChanges.pipe(debounceTime(300), takeUntil(this.destroy$)).subscribe(console.log);
     }
 
     addNickname(nickname: string): void {
         this.nicknames = [nickname, ...this.nicknames];
         this.nicknames$.next(this.nicknames);
-        this.nicknameToAdd = '';
+        this.newNickname.setValue('');
     }
 }
