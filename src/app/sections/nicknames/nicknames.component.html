@@ -8,7 +8,9 @@
                 <input matInput [formControl]="newNickname" />
             </mat-form-field>
         </form>
-        <button mat-button color="primary" (click)="addNickname(newNickname.value)">Add</button>
+        <button mat-raised-button type="submit" [disabled]="!newNickname.valid" color="primary" (click)="addNickname(newNickname.value)">
+            Add
+        </button>
     </mat-card-content>
 </mat-card>
 
