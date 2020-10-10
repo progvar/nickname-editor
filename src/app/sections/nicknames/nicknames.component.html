@@ -3,10 +3,11 @@
         <mat-card-title><h2>Add Nickname</h2></mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <mat-form-field>
-            <input matInput [formControl]="newNickname" />
-        </mat-form-field>
-
+        <form (ngSubmit)="addNickname(newNickname.value)">
+            <mat-form-field>
+                <input matInput [formControl]="newNickname" />
+            </mat-form-field>
+        </form>
         <button mat-button color="primary" (click)="addNickname(newNickname.value)">Add</button>
     </mat-card-content>
 </mat-card>
