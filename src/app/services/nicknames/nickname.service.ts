@@ -6,6 +6,7 @@ import { Observable, of } from 'rxjs';
 })
 export class NicknameService {
     isValid(nickname: string): Observable<boolean> {
+        console.log(nickname[0] === 'a');
         return of(nickname[0] === 'a');
     }
 }

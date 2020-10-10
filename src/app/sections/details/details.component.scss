@@ -1,10 +1,10 @@
 @import '~@angular/material/theming';
 
-.details-container {
+:host {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-color: mat-color(mat-palette($mat-indigo, 800));
+    background-color: mat-color(mat-palette($mat-pink, 800));
     padding: 48px;
 
     #address,

@@ -1,0 +1,27 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title><h2>Add Nickname</h2></mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <mat-form-field>
+            <input matInput [formControl] [(ngModel)]="nicknameToAdd" [formControl]="formControl" />
+        </mat-form-field>
+
+        <div>
+            <button mat-button color="primary" (click)="addNickname(nicknameToAdd)">Add</button>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<h2 *ngIf="(nicknames$ | async).length">Nicknames</h2>
+
+<mat-card *ngFor="let nickname of nicknames$ | async">
+    <mat-card-header>
+        <mat-card-title
+            ><h2>
+                {{ nickname }}
+            </h2>
+        </mat-card-title>
+    </mat-card-header>
+    <mat-card-content> </mat-card-content>
+</mat-card>
