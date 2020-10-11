@@ -8,17 +8,19 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DetailsSectionComponent } from './details/details.component';
 import { NicknamesSectionComponent } from './nicknames/nicknames.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
     imports: [
         CommonModule,
         MatListModule,
+        FormsModule,
+        ReactiveFormsModule,
         MatCardModule,
         MatButtonModule,
         MatFormFieldModule,
         MatInputModule,
-        FormsModule,
-        ReactiveFormsModule,
+        MatProgressSpinnerModule,
     ],
     declarations: [DetailsSectionComponent, NicknamesSectionComponent],
     exports: [DetailsSectionComponent, NicknamesSectionComponent],

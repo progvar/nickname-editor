@@ -1,14 +1,30 @@
 <mat-card>
-    <mat-card-header>
-        <mat-card-title><h2>Add Nickname</h2></mat-card-title>
-    </mat-card-header>
     <mat-card-content>
         <form (ngSubmit)="addNickname(newNickname.value)">
             <mat-form-field>
-                <input matInput [formControl]="newNickname" />
+                <mat-label>Nickname..</mat-label>
+                <input
+                    matInput
+                    [formControl]="newNickname"
+                    autocomplete="off"
+                />
+                <mat-spinner
+                    matSuffix
+                    *ngIf="newNickname.pending"
+                    diameter="24"
+                ></mat-spinner>
+                <mat-hint>Hint: nicknames should start with 'a'</mat-hint>
+                <mat-error>Invalid nickname</mat-error>
             </mat-form-field>
         </form>
-        <button mat-raised-button type="submit" [disabled]="!newNickname.valid" color="primary" (click)="addNickname(newNickname.value)">
+
+        <button
+            mat-raised-button
+            type="submit"
+            [disabled]="!newNickname.valid"
+            color="primary"
+            (click)="addNickname(newNickname.value)"
+        >
             Add
         </button>
     </mat-card-content>
@@ -24,5 +40,4 @@
             </h2>
         </mat-card-title>
     </mat-card-header>
-    <mat-card-content> </mat-card-content>
 </mat-card>
