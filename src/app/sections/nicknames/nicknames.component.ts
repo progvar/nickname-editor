@@ -49,15 +49,15 @@ export class NicknamesSectionComponent implements AfterViewInit, OnDestroy {
             fromEvent(this.nicknameForm.nativeElement, 'submit'),
         );
 
-        const latestNicknameValue$ = new ReplaySubject(1);
+        const latestNickname$ = new ReplaySubject(1);
 
         this.nicknameInput.valueChanges
             .pipe(debounceTime(300), takeUntil(this.destroy$))
-            .subscribe(latestNicknameValue$);
+            .subscribe(latestNickname$);
 
         this.nicknames$ = addNickname$.pipe(
             filter(() => this.nicknameInput.valid),
-            switchMap(() => latestNicknameValue$.pipe(take(1))),
+            switchMap(() => latestNickname$.pipe(take(1))),
             scan(this.addNicknameToList, []),
             tap(this.resetInput.bind(this)),
             takeUntil(this.destroy$),
