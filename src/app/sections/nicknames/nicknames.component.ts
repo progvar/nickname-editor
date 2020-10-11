@@ -6,15 +6,14 @@ import {
     ViewChild,
 } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { fromEvent, merge, Observable, ReplaySubject, Subject } from 'rxjs';
+import { fromEvent, merge, Observable, Subject } from 'rxjs';
 import {
-    debounceTime,
     filter,
+    map,
     scan,
-    switchMap,
-    take,
     takeUntil,
     tap,
+    withLatestFrom,
 } from 'rxjs/operators';
 import { ValidationService } from 'src/app/services/validation/validation.service';
 
@@ -45,19 +44,21 @@ export class NicknamesSectionComponent implements AfterViewInit, OnDestroy {
 
     ngAfterViewInit(): void {
         const addNickname$ = merge(
-            fromEvent(this.addBtn.nativeElement, 'click'),
-            fromEvent(this.nicknameForm.nativeElement, 'submit'),
+            ...[
+                fromEvent(this.addBtn.nativeElement, 'click'),
+                fromEvent(this.nicknameForm.nativeElement, 'submit'),
+            ],
         );
 
-        const latestNickname$ = new ReplaySubject(1);
-
-        this.nicknameInput.valueChanges
-            .pipe(debounceTime(300), takeUntil(this.destroy$))
-            .subscribe(latestNickname$);
+        const inputValue$ = this.nicknameInput.valueChanges.pipe(
+            takeUntil(this.destroy$),
+            filter((inputValue) => !!inputValue),
+        );
 
         this.nicknames$ = addNickname$.pipe(
+            withLatestFrom(inputValue$),
             filter(() => this.nicknameInput.valid),
-            switchMap(() => latestNickname$.pipe(take(1))),
+            map(([_, inputValue]) => inputValue),
             scan(this.addNicknameToList, []),
             tap(this.resetInput.bind(this)),
             takeUntil(this.destroy$),
@@ -68,15 +69,16 @@ export class NicknamesSectionComponent implements AfterViewInit, OnDestroy {
         nicknamesSoFar: string[],
         nicknameInput: string,
     ): string[] {
-        return [nicknameInput, ...nicknamesSoFar];
+        console.log('input', nicknameInput);
+        return nicknameInput && !nicknamesSoFar.includes(nicknameInput)
+            ? [nicknameInput, ...nicknamesSoFar]
+            : [...nicknamesSoFar];
     }
 
     resetInput(): void {
-        if (this.nicknameInput.pristine) {
-            return;
+        if (this.nicknameInput.dirty) {
+            this.nicknameInput.reset('');
+            this.nicknameInput.setErrors(null);
         }
-
-        this.nicknameInput.reset();
-        this.nicknameInput.setErrors(null);
     }
 }
