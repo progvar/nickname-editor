@@ -1,6 +1,6 @@
 <mat-card>
     <mat-card-content>
-        <form (ngSubmit)="addNickname(newNickname.value)">
+        <form #nicknameForm>
             <mat-form-field>
                 <mat-label>Nickname..</mat-label>
                 <input
@@ -23,7 +23,7 @@
             mat-raised-button
             color="primary"
             [disabled]="!newNickname.valid"
-            (click)="addNickname(newNickname.value)"
+            #addBtn
         >
             Add
         </button>

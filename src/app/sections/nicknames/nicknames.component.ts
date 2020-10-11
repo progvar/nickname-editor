@@ -1,7 +1,12 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+    AfterViewInit,
+    Component,
+    ElementRef,
+    OnDestroy,
+    ViewChild,
+} from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { debounceTime, filter, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, fromEvent, merge, Subject } from 'rxjs';
 import { ValidationService } from 'src/app/services/validation/validation.service';
 
 @Component({
@@ -9,7 +14,10 @@ import { ValidationService } from 'src/app/services/validation/validation.servic
     templateUrl: 'nicknames.component.html',
     styleUrls: ['./nicknames.component.scss'],
 })
-export class NicknamesSectionComponent implements OnInit, OnDestroy {
+export class NicknamesSectionComponent implements AfterViewInit, OnDestroy {
+    @ViewChild('addBtn', { read: ElementRef }) addBtn: ElementRef;
+    @ViewChild('nicknameForm') nicknameForm: ElementRef;
+
     nicknames: string[] = [];
     nicknames$ = new BehaviorSubject(this.nicknames);
     newNickname = new FormControl(
@@ -27,22 +35,19 @@ export class NicknamesSectionComponent implements OnInit, OnDestroy {
         this.destroy$.complete();
     }
 
-    ngOnInit(): void {
-        this.newNickname.valueChanges
-            .pipe(
-                debounceTime(300),
-                filter((value) => value),
-                takeUntil(this.destroy$),
-            )
-            .subscribe(console.log);
+    ngAfterViewInit(): void {
+        merge(
+            fromEvent(this.addBtn.nativeElement, 'click'),
+            fromEvent(this.nicknameForm.nativeElement, 'submit'),
+        ).subscribe(this.addNickname.bind(this));
     }
 
-    addNickname(nickname: string): void {
+    addNickname(): void {
         if (!this.newNickname.valid) {
             return;
         }
 
-        this.nicknames = [nickname, ...this.nicknames];
+        this.nicknames = [this.newNickname.value, ...this.nicknames];
         this.nicknames$.next(this.nicknames);
         this.newNickname.reset('');
         this.newNickname.setErrors(null);
