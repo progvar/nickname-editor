@@ -6,7 +6,16 @@ import {
     ViewChild,
 } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { BehaviorSubject, fromEvent, merge, Subject } from 'rxjs';
+import { fromEvent, merge, Observable, ReplaySubject, Subject } from 'rxjs';
+import {
+    debounceTime,
+    filter,
+    scan,
+    switchMap,
+    take,
+    takeUntil,
+    tap,
+} from 'rxjs/operators';
 import { ValidationService } from 'src/app/services/validation/validation.service';
 
 @Component({
@@ -18,9 +27,8 @@ export class NicknamesSectionComponent implements AfterViewInit, OnDestroy {
     @ViewChild('addBtn', { read: ElementRef }) addBtn: ElementRef;
     @ViewChild('nicknameForm') nicknameForm: ElementRef;
 
-    nicknames: string[] = [];
-    nicknames$ = new BehaviorSubject(this.nicknames);
-    newNickname = new FormControl(
+    nicknames$: Observable<any>;
+    nicknameInput = new FormControl(
         '',
         Validators.required,
         this.validationService.nickname,
@@ -36,20 +44,36 @@ export class NicknamesSectionComponent implements AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-        merge(
+        const addNickname$ = merge(
             fromEvent(this.addBtn.nativeElement, 'click'),
             fromEvent(this.nicknameForm.nativeElement, 'submit'),
-        ).subscribe(this.addNickname.bind(this));
+        );
+
+        const latestNicknameValue$ = new ReplaySubject(1);
+
+        this.nicknameInput.valueChanges
+            .pipe(debounceTime(300), takeUntil(this.destroy$))
+            .subscribe(latestNicknameValue$);
+
+        this.nicknames$ = addNickname$.pipe(
+            filter(() => this.nicknameInput.valid),
+            switchMap(() => latestNicknameValue$.pipe(take(1))),
+            scan(this.addNicknameToList, []),
+            tap(this.resetInput.bind(this)),
+            takeUntil(this.destroy$),
+        );
     }
 
-    addNickname(): void {
-        if (!this.newNickname.valid) {
+    addNicknameToList(nicknamesSoFar, nicknameInput): string[] {
+        return [nicknameInput, ...nicknamesSoFar];
+    }
+
+    resetInput(): void {
+        if (this.nicknameInput.pristine) {
             return;
         }
 
-        this.nicknames = [this.newNickname.value, ...this.nicknames];
-        this.nicknames$.next(this.nicknames);
-        this.newNickname.reset('');
-        this.newNickname.setErrors(null);
+        this.nicknameInput.reset();
+        this.nicknameInput.setErrors(null);
     }
 }

@@ -5,12 +5,12 @@
                 <mat-label>Nickname..</mat-label>
                 <input
                     matInput
-                    [formControl]="newNickname"
+                    [formControl]="nicknameInput"
                     autocomplete="off"
                 />
                 <mat-spinner
                     matSuffix
-                    *ngIf="newNickname.pending"
+                    *ngIf="nicknameInput.pending"
                     diameter="24"
                 ></mat-spinner>
                 <mat-hint>Hint: nicknames should start with 'a'</mat-hint>
@@ -22,7 +22,7 @@
             type="submit"
             mat-raised-button
             color="primary"
-            [disabled]="!newNickname.valid"
+            [disabled]="!nicknameInput.valid"
             #addBtn
         >
             Add
@@ -30,7 +30,7 @@
     </mat-card-content>
 </mat-card>
 
-<h2 *ngIf="(nicknames$ | async).length">Nicknames</h2>
+<h2 *ngIf="(nicknames$ | async)?.length">Nicknames</h2>
 
 <mat-card *ngFor="let nickname of nicknames$ | async">
     <mat-card-header>
