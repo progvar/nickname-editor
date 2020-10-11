@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { NicknameService } from 'src/app/services/nicknames/nickname.service';
+import { FormControl, Validators } from '@angular/forms';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, takeUntil } from 'rxjs/operators';
+import { ValidationService } from 'src/app/services/validation/validation.service';
 
 @Component({
     selector: 'app-nicknames-section',
@@ -10,15 +10,17 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
     styleUrls: ['./nicknames.component.scss'],
 })
 export class NicknamesSectionComponent implements OnInit, OnDestroy {
-    nicknameToAdd = '';
-    isNicknameValid;
     nicknames: string[] = [];
     nicknames$ = new BehaviorSubject(this.nicknames);
-    formControl: FormControl = new FormControl();
+    newNickname = new FormControl(
+        '',
+        Validators.required,
+        this.validationService.nickname,
+    );
 
     private destroy$ = new Subject();
 
-    constructor(private nicknameService: NicknameService) {}
+    constructor(private validationService: ValidationService) {}
 
     ngOnDestroy(): void {
         this.destroy$.next();
@@ -26,12 +28,23 @@ export class NicknamesSectionComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.formControl.valueChanges.pipe(debounceTime(300), takeUntil(this.destroy$)).subscribe(console.log);
+        this.newNickname.valueChanges
+            .pipe(
+                debounceTime(300),
+                filter((value) => value),
+                takeUntil(this.destroy$),
+            )
+            .subscribe(console.log);
     }
 
     addNickname(nickname: string): void {
+        if (!this.newNickname.valid) {
+            return;
+        }
+
         this.nicknames = [nickname, ...this.nicknames];
         this.nicknames$.next(this.nicknames);
-        this.nicknameToAdd = '';
+        this.newNickname.reset('');
+        this.newNickname.setErrors(null);
     }
 }
