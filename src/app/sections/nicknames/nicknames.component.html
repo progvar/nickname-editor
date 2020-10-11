@@ -32,7 +32,7 @@
 
 <h2 *ngIf="(nicknames$ | async)?.length">Nicknames</h2>
 
-<mat-card *ngFor="let nickname of nicknames$ | async">
+<mat-card *ngFor="let nickname of nicknames$ | async" class="nickname-card">
     <mat-card-header>
         <mat-card-title
             ><h2>
