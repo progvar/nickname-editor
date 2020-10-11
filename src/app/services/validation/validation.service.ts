@@ -9,7 +9,7 @@ import { delay, tap } from 'rxjs/operators';
 export class ValidationService {
     nickname(
         nicknameControl: AbstractControl,
-    ): Observable<{ message: any }> | Observable<null> {
+    ): Observable<{ message: string }> | Observable<null> {
         const isValid = nicknameControl.value[0] === 'a';
 
         return of(
