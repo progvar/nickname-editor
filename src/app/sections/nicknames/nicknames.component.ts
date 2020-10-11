@@ -64,7 +64,10 @@ export class NicknamesSectionComponent implements AfterViewInit, OnDestroy {
         );
     }
 
-    addNicknameToList(nicknamesSoFar, nicknameInput): string[] {
+    addNicknameToList(
+        nicknamesSoFar: string[],
+        nicknameInput: string,
+    ): string[] {
         return [nicknameInput, ...nicknamesSoFar];
     }
 
