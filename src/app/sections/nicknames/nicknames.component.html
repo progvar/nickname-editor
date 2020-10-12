@@ -17,17 +17,30 @@
                 <mat-error>Invalid nickname</mat-error>
             </mat-form-field>
         </form>
+    </mat-card-content>
 
+    <mat-card-actions>
         <button
+            id="add-btn"
             type="submit"
             mat-raised-button
-            color="primary"
+            color="accent"
             [disabled]="!nicknameInput.valid"
             #addBtn
         >
             Add
         </button>
-    </mat-card-content>
+        <button
+            id="save-btn"
+            type="button"
+            mat-raised-button
+            color="primary"
+            [disabled]="!(nicknames$ | async)?.length"
+            #saveBtn
+        >
+            Save
+        </button>
+    </mat-card-actions>
 </mat-card>
 
 <h2 *ngIf="(nicknames$ | async)?.length">Nicknames</h2>

@@ -26,7 +26,13 @@ export class AppPage {
     }
 
     getAddBtnEl(): ElementFinder {
-        return element(by.css('app-root app-nicknames-section button'));
+        return element(by.css('app-root app-nicknames-section button#add-btn'));
+    }
+
+    getSaveBtnEl(): ElementFinder {
+        return element(
+            by.css('app-root app-nicknames-section button#save-btn'),
+        );
     }
 
     getMatHintEl(): ElementFinder {

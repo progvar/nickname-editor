@@ -23,55 +23,56 @@ describe('Nickname Editor', () => {
         page.navigateTo();
 
         const inputEl = page.getInputEl();
-        const buttonEl = page.getAddBtnEl();
+        const addBtnEl = page.getAddBtnEl();
         const EC = protractor.ExpectedConditions;
 
         inputEl.sendKeys('a');
 
         expect(inputEl.getAttribute('value')).toEqual('a');
 
-        browser.wait(EC.elementToBeClickable(buttonEl), 1000);
+        browser.wait(EC.elementToBeClickable(addBtnEl), 1000);
     });
 
     it('should disable the add button when an invalid input is entered', () => {
         page.navigateTo();
 
         const inputEl = page.getInputEl();
-        const buttonEl = page.getAddBtnEl();
+        const addBtnEl = page.getAddBtnEl();
         const EC = protractor.ExpectedConditions;
 
         inputEl.sendKeys('g');
 
         expect(inputEl.getAttribute('value')).toEqual('g');
 
-        browser.wait(EC.not(EC.elementToBeClickable(buttonEl)), 1000);
+        browser.wait(EC.not(EC.elementToBeClickable(addBtnEl)), 1000);
     });
 
     it('should enable then disable the add button when first entering a valid then an invalid input', () => {
         page.navigateTo();
 
         const inputEl = page.getInputEl();
-        const buttonEl = page.getAddBtnEl();
+        const addBtnEl = page.getAddBtnEl();
         const EC = ExpectedConditions;
 
         inputEl.sendKeys('a');
 
         expect(inputEl.getAttribute('value')).toEqual('a');
 
-        browser.wait(EC.elementToBeClickable(buttonEl), 1000);
+        browser.wait(EC.elementToBeClickable(addBtnEl), 1000);
 
         inputEl.sendKeys(Key.BACK_SPACE);
         inputEl.sendKeys('g');
 
         expect(inputEl.getAttribute('value')).toEqual('g');
-        browser.wait(EC.not(EC.elementToBeClickable(buttonEl)), 1000);
+        browser.wait(EC.not(EC.elementToBeClickable(addBtnEl)), 1000);
     });
 
-    it('should add a new nickname to the list', () => {
+    it('should add a new nickname to the list and enable the save button', () => {
         page.navigateTo();
 
         const inputEl = page.getInputEl();
-        const buttonEl = page.getAddBtnEl();
+        const addBtnEl = page.getAddBtnEl();
+        const saveBtnEl = page.getSaveBtnEl();
         const nicknameElements = page.getNicknameElements();
         const EC = protractor.ExpectedConditions;
 
@@ -79,9 +80,11 @@ describe('Nickname Editor', () => {
 
         expect(inputEl.getAttribute('value')).toEqual('a');
 
-        browser.wait(EC.elementToBeClickable(buttonEl), 1000);
+        browser.wait(EC.elementToBeClickable(addBtnEl), 1000);
 
-        buttonEl.click();
+        addBtnEl.click();
+
+        browser.wait(EC.elementToBeClickable(saveBtnEl));
 
         expect(nicknameElements.count()).toBe(1);
     });
@@ -90,7 +93,7 @@ describe('Nickname Editor', () => {
         page.navigateTo();
 
         const inputEl = page.getInputEl();
-        const buttonEl = page.getAddBtnEl();
+        const addBtnEl = page.getAddBtnEl();
         const nicknameElements = page.getNicknameElements();
         const EC = protractor.ExpectedConditions;
 
@@ -98,9 +101,9 @@ describe('Nickname Editor', () => {
 
         expect(inputEl.getAttribute('value')).toEqual('a');
 
-        browser.wait(EC.elementToBeClickable(buttonEl), 1000);
+        browser.wait(EC.elementToBeClickable(addBtnEl), 1000);
 
-        buttonEl.click();
+        addBtnEl.click();
 
         expect(nicknameElements.count()).toBe(1);
         expect(inputEl.getAttribute('value')).toBe('');
@@ -110,7 +113,7 @@ describe('Nickname Editor', () => {
         page.navigateTo();
 
         const inputEl = page.getInputEl();
-        const buttonEl = page.getAddBtnEl();
+        const addBtnEl = page.getAddBtnEl();
         const nicknameElements = page.getNicknameElements();
         const EC = protractor.ExpectedConditions;
 
@@ -118,9 +121,9 @@ describe('Nickname Editor', () => {
 
         expect(inputEl.getAttribute('value')).toEqual('a');
 
-        browser.wait(EC.elementToBeClickable(buttonEl), 1000);
+        browser.wait(EC.elementToBeClickable(addBtnEl), 1000);
 
-        buttonEl.click();
+        addBtnEl.click();
 
         expect(nicknameElements.count()).toBe(1);
 
@@ -129,9 +132,9 @@ describe('Nickname Editor', () => {
 
         expect(inputEl.getAttribute('value')).toEqual('a');
 
-        browser.wait(EC.elementToBeClickable(buttonEl), 1000);
+        browser.wait(EC.elementToBeClickable(addBtnEl), 1000);
 
-        buttonEl.click();
+        addBtnEl.click();
 
         expect(nicknameElements.count()).toBe(1);
     });
@@ -140,7 +143,7 @@ describe('Nickname Editor', () => {
         page.navigateTo();
 
         const inputEl = page.getInputEl();
-        const buttonEl = page.getAddBtnEl();
+        const addBtnEl = page.getAddBtnEl();
         const nicknameElements = page.getNicknameElements();
         const EC = protractor.ExpectedConditions;
 
@@ -148,9 +151,9 @@ describe('Nickname Editor', () => {
 
         expect(inputEl.getAttribute('value')).toEqual('a');
 
-        browser.wait(EC.elementToBeClickable(buttonEl), 1000);
+        browser.wait(EC.elementToBeClickable(addBtnEl), 1000);
 
-        buttonEl.click();
+        addBtnEl.click();
 
         expect(nicknameElements.count()).toBe(1);
 
@@ -158,9 +161,9 @@ describe('Nickname Editor', () => {
 
         expect(inputEl.getAttribute('value')).toEqual('aaa');
 
-        browser.wait(EC.elementToBeClickable(buttonEl), 1000);
+        browser.wait(EC.elementToBeClickable(addBtnEl), 1000);
 
-        buttonEl.click();
+        addBtnEl.click();
 
         expect(nicknameElements.count()).toBe(2);
     });

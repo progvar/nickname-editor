@@ -23,8 +23,9 @@ import { ValidationService } from 'src/app/services/validation/validation.servic
     styleUrls: ['./nicknames.component.scss'],
 })
 export class NicknamesSectionComponent implements AfterViewInit, OnDestroy {
-    @ViewChild('addBtn', { read: ElementRef }) addBtn: ElementRef;
     @ViewChild('nicknameForm') nicknameForm: ElementRef;
+    @ViewChild('addBtn', { read: ElementRef }) addBtn: ElementRef;
+    @ViewChild('saveBtn', { read: ElementRef }) saveBtn: ElementRef;
 
     nicknames$: Observable<any>;
     nicknameInput = new FormControl(
@@ -63,13 +64,16 @@ export class NicknamesSectionComponent implements AfterViewInit, OnDestroy {
             tap(this.resetInput.bind(this)),
             takeUntil(this.destroy$),
         );
+
+        fromEvent(this.saveBtn.nativeElement, 'click')
+            .pipe(withLatestFrom(this.nicknames$), takeUntil(this.destroy$))
+            .subscribe(this.saveNicknames);
     }
 
     addNicknameToList(
         nicknamesSoFar: string[],
         nicknameInput: string,
     ): string[] {
-        console.log('input', nicknameInput);
         return nicknameInput && !nicknamesSoFar.includes(nicknameInput)
             ? [nicknameInput, ...nicknamesSoFar]
             : [...nicknamesSoFar];
@@ -80,5 +84,10 @@ export class NicknamesSectionComponent implements AfterViewInit, OnDestroy {
             this.nicknameInput.reset('');
             this.nicknameInput.setErrors(null);
         }
+    }
+
+    saveNicknames([_, nicknames]): void {
+        console.log('Nicknames have been saved!');
+        console.log(nicknames);
     }
 }
