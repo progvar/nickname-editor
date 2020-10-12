@@ -27,7 +27,7 @@ export class NicknamesSectionComponent implements AfterViewInit, OnDestroy {
     @ViewChild('addBtn', { read: ElementRef }) addBtn: ElementRef;
     @ViewChild('saveBtn', { read: ElementRef }) saveBtn: ElementRef;
 
-    nicknames$: Observable<any>;
+    nicknames$: Observable<string[]>;
     nicknameInput = new FormControl(
         '',
         Validators.required,
