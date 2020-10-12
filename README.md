@@ -26,12 +26,16 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 From a technical perspective the end goal was to implement the app in a fully reactive way, withouth using any template driven approaches.
 
-### Components
+### Sections
 
 The different parts of the UI are organised into sections:
 
 -   Details: holds the address and description of the building
 -   Nicknames: where the user can add new nicknames to a list
+
+For now these sections are only components, but over time they can become standalone section modules as well with their own services/pipes/directives and even other smaller components.
+
+So basically sections can define internal module boundaries.
 
 ### Services
 
