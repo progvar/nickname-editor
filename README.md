@@ -28,7 +28,7 @@ From a technical perspective the end goal was to implement the app in a fully re
 
 ### Components
 
-The UI is grouped by sections. Currently there are two section:
+The different parts of the UI are organised into sections:
 
 -   Details: holds the address and description of the building
 -   Nicknames: where the user can add new nicknames to a list
