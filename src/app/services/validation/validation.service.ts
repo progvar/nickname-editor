@@ -10,13 +10,14 @@ export class ValidationService {
     nickname(
         nicknameControl: AbstractControl,
     ): Observable<{ message: string }> | Observable<null> {
-        const isValid = nicknameControl.value[0] === 'a';
+        const nickname = nicknameControl.value.trim();
+        const isValid = nickname[0] === 'a';
 
         return of(
             isValid
                 ? null
                 : {
-                      message: `${nicknameControl.value} doesn't start with an 'a'`,
+                      message: `${nickname} doesn't start with an 'a'`,
                   },
         ).pipe(
             delay(1000),

@@ -1,7 +1,20 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+    AfterViewInit,
+    Component,
+    ElementRef,
+    OnDestroy,
+    ViewChild,
+} from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { debounceTime, filter, takeUntil } from 'rxjs/operators';
+import { fromEvent, merge, Observable, Subject } from 'rxjs';
+import {
+    filter,
+    map,
+    scan,
+    takeUntil,
+    tap,
+    withLatestFrom,
+} from 'rxjs/operators';
 import { ValidationService } from 'src/app/services/validation/validation.service';
 
 @Component({
@@ -9,10 +22,13 @@ import { ValidationService } from 'src/app/services/validation/validation.servic
     templateUrl: 'nicknames.component.html',
     styleUrls: ['./nicknames.component.scss'],
 })
-export class NicknamesSectionComponent implements OnInit, OnDestroy {
-    nicknames: string[] = [];
-    nicknames$ = new BehaviorSubject(this.nicknames);
-    newNickname = new FormControl(
+export class NicknamesSectionComponent implements AfterViewInit, OnDestroy {
+    @ViewChild('nicknameForm') nicknameForm: ElementRef;
+    @ViewChild('addBtn', { read: ElementRef }) addBtn: ElementRef;
+    @ViewChild('saveBtn', { read: ElementRef }) saveBtn: ElementRef;
+
+    nicknames$: Observable<string[]>;
+    nicknameInput = new FormControl(
         '',
         Validators.required,
         this.validationService.nickname,
@@ -27,24 +43,51 @@ export class NicknamesSectionComponent implements OnInit, OnDestroy {
         this.destroy$.complete();
     }
 
-    ngOnInit(): void {
-        this.newNickname.valueChanges
-            .pipe(
-                debounceTime(300),
-                filter((value) => value),
-                takeUntil(this.destroy$),
-            )
-            .subscribe(console.log);
+    ngAfterViewInit(): void {
+        const addNickname$ = merge(
+            ...[
+                fromEvent(this.addBtn.nativeElement, 'click'),
+                fromEvent(this.nicknameForm.nativeElement, 'submit'),
+            ],
+        );
+
+        const inputValue$ = this.nicknameInput.valueChanges.pipe(
+            takeUntil(this.destroy$),
+            filter((inputValue) => !!inputValue),
+        );
+
+        this.nicknames$ = addNickname$.pipe(
+            withLatestFrom(inputValue$),
+            filter(() => this.nicknameInput.valid),
+            map(([_, inputValue]) => inputValue),
+            scan(this.addNicknameToList, []),
+            tap(this.resetInput.bind(this)),
+            takeUntil(this.destroy$),
+        );
+
+        fromEvent(this.saveBtn.nativeElement, 'click')
+            .pipe(withLatestFrom(this.nicknames$), takeUntil(this.destroy$))
+            .subscribe(this.saveNicknames);
     }
 
-    addNickname(nickname: string): void {
-        if (!this.newNickname.valid) {
-            return;
-        }
+    addNicknameToList(
+        nicknamesSoFar: string[],
+        nicknameInput: string,
+    ): string[] {
+        return nicknameInput && !nicknamesSoFar.includes(nicknameInput)
+            ? [nicknameInput, ...nicknamesSoFar]
+            : [...nicknamesSoFar];
+    }
 
-        this.nicknames = [nickname, ...this.nicknames];
-        this.nicknames$.next(this.nicknames);
-        this.newNickname.reset('');
-        this.newNickname.setErrors(null);
+    resetInput(): void {
+        if (this.nicknameInput.dirty) {
+            this.nicknameInput.reset('');
+            this.nicknameInput.setErrors(null);
+        }
+    }
+
+    saveNicknames([_, nicknames]): void {
+        console.log('Nicknames have been saved!');
+        console.log(nicknames);
     }
 }
